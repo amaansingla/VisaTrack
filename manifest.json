@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "VisaTrack",
+  "version": "1.0",
+  "description": "Overlays H1B sponsorship data on LinkedIn job cards",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "VisaTrack"
+  }
+}
