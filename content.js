@@ -11,11 +11,8 @@ function maybeRedirect() {
   return false
 }
 
-// Run immediately on load
 maybeRedirect()
 
-// LinkedIn is a single-page app — it changes the URL without reloading.
-// Watch for those changes and redirect again if needed.
 ;(function watchUrlChanges() {
   let lastPath = location.pathname
   const check = () => {
@@ -24,7 +21,6 @@ maybeRedirect()
       maybeRedirect()
     }
   }
-  // Patch pushState / replaceState
   const wrap = (method) => {
     const orig = history[method]
     history[method] = function (...args) {
@@ -35,7 +31,6 @@ maybeRedirect()
   wrap('pushState')
   wrap('replaceState')
   window.addEventListener('popstate', check)
-  // Safety net: poll every 400ms in case LinkedIn changes URL another way
   setInterval(check, 400)
 })()
 
@@ -87,7 +82,7 @@ function showPopup(badge, companyName, count) {
   const isSponsoring = count > 0
   const statusColor = isSponsoring ? '#27500A' : '#791F1F'
   const statusBg = isSponsoring ? '#EAF3DE' : '#FCEBEB'
-  const statusText = isSponsoring ? `Sponsors H1B — ${count} filings (FY2019)` : 'No H1B history in dataset'
+  const statusText = isSponsoring ? `Sponsors H1B — ${count} filings (FY2020–2025)` : 'No H1B history in dataset'
 
   popup.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
@@ -95,7 +90,7 @@ function showPopup(badge, companyName, count) {
       <span class="visatrack-close" style="cursor:pointer;font-size:16px;color:#888;line-height:1">&times;</span>
     </div>
     <div style="font-size:12px;padding:6px 10px;border-radius:99px;background:${statusBg};color:${statusColor};display:inline-block">${statusText}</div>
-    <div style="font-size:11px;color:#888;margin-top:8px">Data: DOL LCA Disclosure FY2019</div>
+    <div style="font-size:11px;color:#888;margin-top:8px">Data: DOL LCA Disclosure FY2020–2025</div>
   `
 
   popup.style.cssText = `

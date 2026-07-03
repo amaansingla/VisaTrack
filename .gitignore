@@ -143,3 +143,4 @@ vite.config.ts.timestamp-*
 .vite/
 h1b_data.json
 H-1B_Disclosure_Data_FY2019.xlsx
+*.xlsx
