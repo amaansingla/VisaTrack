@@ -1,5 +1,44 @@
 console.log('VisaTrack loaded!')
 
+// ── REDIRECT: send the React-heavy /jobs/search-results/ page to the
+//    friendly /jobs/search/ page where our badges work perfectly ──
+function maybeRedirect() {
+  if (location.pathname.startsWith('/jobs/search-results')) {
+    const newUrl = location.href.replace('/jobs/search-results', '/jobs/search')
+    location.replace(newUrl)
+    return true
+  }
+  return false
+}
+
+// Run immediately on load
+maybeRedirect()
+
+// LinkedIn is a single-page app — it changes the URL without reloading.
+// Watch for those changes and redirect again if needed.
+;(function watchUrlChanges() {
+  let lastPath = location.pathname
+  const check = () => {
+    if (location.pathname !== lastPath) {
+      lastPath = location.pathname
+      maybeRedirect()
+    }
+  }
+  // Patch pushState / replaceState
+  const wrap = (method) => {
+    const orig = history[method]
+    history[method] = function (...args) {
+      orig.apply(this, args)
+      check()
+    }
+  }
+  wrap('pushState')
+  wrap('replaceState')
+  window.addEventListener('popstate', check)
+  // Safety net: poll every 400ms in case LinkedIn changes URL another way
+  setInterval(check, 400)
+})()
+
 let filterActive = false
 let filterInterval = null
 let h1bData = {}
@@ -105,7 +144,7 @@ function makeBadge(type, count) {
   `
 
   if (type === 'green') {
-    badge.textContent = `H1B: ${count} filings`
+    badge.textContent = `H1B: ${count} filing${count === 1 ? '' : 's'}`
     badge.style.cssText = styles + `background:#EAF3DE;color:#27500A;border-color:#C0DD97;`
   } else if (type === 'red') {
     badge.textContent = `No H1B history`
